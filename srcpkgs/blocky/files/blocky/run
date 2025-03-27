@@ -1,0 +1,6 @@
+#!/bin/sh
+exec 2>&1
+
+export HOME=/var/lib/blocky
+
+exec chpst -u blocky blocky --config ${CONFFILE:-/etc/blocky/config.yml}
