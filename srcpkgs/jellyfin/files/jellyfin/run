@@ -1,0 +1,10 @@
+#!/bin/sh
+exec 2>&1
+
+export HOME=/var/lib/jellyfin
+
+exec chpst -u jellyfin /opt/jellyfin/jellyfin \
+	-d "$HOME"/data \
+	-C "$HOME"/cache \
+	-c "$HOME"/config \
+	-l "$HOME"/log

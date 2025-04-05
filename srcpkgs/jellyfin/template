@@ -1,0 +1,44 @@
+# Template file for 'jellyfin'
+pkgname=jellyfin
+version=10.10.6
+revision=1
+archs="aarch64 aarch64-musl x86_64 x86_64-musl"
+depends="ffmpeg"
+short_desc="The Free Software Media System"
+maintainer="krum <git@kris.sh"
+license="GPL-2.0-only"
+homepage="https://jellyfin.org"
+case "$XBPS_TARGET_MACHINE" in
+aarch64)
+	distfiles=https://repo.jellyfin.org/files/server/linux/stable/v${version}/arm64/jellyfin_${version}-arm64.tar.gz
+	checksum=ab1e7e69d60e5c0326a3f9d0c5520179b103469729b6b2a23d80af4a1794e3d1
+;;
+aarch64-musl)
+	distfiles=https://repo.jellyfin.org/files/server/linux/stable/v${version}/arm64-musl/jellyfin_${version}-arm64-musl.tar.gz
+	checksum=5ae514ccbd6fbda0b9358202162c479d81fa7ac0e6fbd9b30bedc48b2d0c9065
+;;
+x86_64)
+	distfiles=https://repo.jellyfin.org/files/server/linux/stable/v${version}/amd64/jellyfin_${version}-amd64.tar.gz
+	checksum=1893ab906425870a85533dcebcd341bec212a8f9ecd8ab7f55d39d8e1ca579ea
+;;
+x86_64-musl)
+	distfiles=https://repo.jellyfin.org/files/server/linux/stable/v${version}/amd64-musl/jellyfin_${version}-amd64-musl.tar.gz
+	checksum=02199e05b202132285e5bf18b719f71b585ea41fe65794cd54e71f41c13f32cf
+;;
+*)
+	broken="No distfiles available for this target"
+	;;
+esac
+
+system_accounts="jellyfin"
+jellyfin_homedir="/var/lib/jellyfin"
+jellyfin_descr="jellyfin daemon"
+
+make_dirs="/var/lib/jellyfin 0700 jellyfin jellyfin"
+
+do_install() {
+	vsv jellyfin
+	
+	vmkdir opt/jellyfin
+	vcopy * opt/jellyfin
+}
