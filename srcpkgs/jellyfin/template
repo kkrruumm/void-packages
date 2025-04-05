@@ -5,7 +5,7 @@ revision=1
 archs="aarch64 aarch64-musl x86_64 x86_64-musl"
 depends="ffmpeg"
 short_desc="The Free Software Media System"
-maintainer="krum <git@kris.sh"
+maintainer="krum <git@kris.sh>"
 license="GPL-2.0-only"
 homepage="https://jellyfin.org"
 case "$XBPS_TARGET_MACHINE" in
