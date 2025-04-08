@@ -1,7 +1,7 @@
 # Template file for 'mullvad-vpn'
 pkgname=mullvad-vpn
 version=2025.5
-revision=2
+revision=3
 archs="aarch64 x86_64"
 depends="alsa-lib iputils libnftnl libnotify nss"
 short_desc="The Mullvad VPN client app for desktop"
@@ -30,4 +30,7 @@ do_install() {
 
 	vmkdir usr/bin
 	vcopy usr/bin usr
+
+	vinstall usr/share/applications/mullvad-vpn.desktop 0644 \
+		usr/share/applications
 }
