@@ -1,6 +1,6 @@
 # Template file for 'jellyfin'
 pkgname=jellyfin
-version=10.10.6
+version=10.10.7
 revision=1
 archs="aarch64 x86_64"
 depends="ffmpeg"
@@ -11,11 +11,11 @@ homepage="https://jellyfin.org"
 case "$XBPS_TARGET_MACHINE" in
 aarch64)
 	distfiles=https://repo.jellyfin.org/files/server/linux/stable/v${version}/arm64/jellyfin_${version}-arm64.tar.gz
-	checksum=ab1e7e69d60e5c0326a3f9d0c5520179b103469729b6b2a23d80af4a1794e3d1
+	checksum=6ddd67274f287330b3d1168c0c1939f369d30d979aff7d08bb3ec541efde8050
 ;;
 x86_64)
 	distfiles=https://repo.jellyfin.org/files/server/linux/stable/v${version}/amd64/jellyfin_${version}-amd64.tar.gz
-	checksum=1893ab906425870a85533dcebcd341bec212a8f9ecd8ab7f55d39d8e1ca579ea
+	checksum=243247f811e6b39bc1b8e5c9450d791586a1efcbf7aab911352a423370305448
 ;;
 *)
 	broken="No distfiles available for this target"
