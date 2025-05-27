@@ -1,0 +1,16 @@
+# Template file for 'qbit-sv'
+pkgname=qbit-sv
+version=0.1
+revision=1
+build_style=meta
+short_desc="Runit service for qbittorrent-nox"
+maintainer="krum <git@kris.sh>"
+license='empty'
+homepage='empty'
+
+system_accounts="_qbtuser"
+_qbtuser_homedir="/var/lib/_qbtuser"
+
+post_install() {
+	vsv qbit-sv
+}
