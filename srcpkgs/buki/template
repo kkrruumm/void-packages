@@ -1,0 +1,15 @@
+# Template file for 'buki'
+pkgname=buki
+version=0.1
+revision=1
+short_desc="Simple POSIX shell UKI builder"
+maintainer="krum <git@kris.sh>"
+license="BSD-3-Clause"
+homepage="https://github.com/kkrruumm/buki"
+distfiles="https://github.com/kkrruumm/buki/archive/${version}.tar.gz"
+checksum=ebee0a0924872491ef91bf8ee1620ecbf69912f04583aa14c9f7e495539cc634
+
+do_install() {
+	vbin buki
+	vlicense LICENSE
+}
