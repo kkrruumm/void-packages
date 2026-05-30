@@ -1,0 +1,19 @@
+# Template file for 'jay'
+pkgname=jay
+version=1.13.0
+revision=1
+build_style=cargo
+makedepends="libinput-devel libgbm-devel eudev-libudev-devel pango-devel fontconfig-devel"
+depends="xorg-server-xwayland vulkan-loader libglvnd"
+short_desc="A Wayland Compositor"
+maintainer="krum <git@kris.sh>"
+license="GPL-3.0"
+homepage="https://github.com/mahkoh/jay"
+distfiles="https://github.com/mahkoh/jay/archive/refs/tags/v${version}.tar.gz"
+checksum=3253ca3a7e2de23263538954ce0145c01cb7df74c78d49622fddc055f120274d
+
+post_install() {
+    vmkdir usr/share/xdg-desktop-portal/portals
+    vcopy etc/jay.portal usr/share/xdg-desktop-portal/portals/
+    vcopy etc/jay-portals.conf usr/share/xdg-desktop-portal/
+}
