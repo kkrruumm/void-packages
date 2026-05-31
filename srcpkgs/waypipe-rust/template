@@ -1,0 +1,20 @@
+# Template file for 'waypipe-rust'
+pkgname=waypipe-rust
+version=0.11.0
+revision=1
+build_style=meson
+build_helper=rust
+hostmakedepends="cargo pkg-config scdoc rust-bindgen"
+makedepends="liblz4-devel libzstd-devel vulkan-loader-devel libgbm-devel" # add ffmpeg7 or newer when packaged for video support
+depends="openssh"
+short_desc="Network transparency with Wayland"
+maintainer="krum <git@kris.sh>"
+license="GPL-3.0-or-later"
+homepage="https://gitlab.freedesktop.org/mstoeckl/waypipe"
+distfiles="https://gitlab.freedesktop.org/mstoeckl/waypipe/-/archive/v${version}/waypipe-v${version}.tar.gz"
+checksum=dc4741bd4435666b4b45ef9b8354c9f742e9c2c5fb99bb49b2ac4f32a371bcd7
+
+pre_build() {
+    cd "${wrksrc}"
+    cargo fetch --locked --target "${XBPS_CROSS_RUST_TARGET:-${XBPS_RUST_TARGET}}"
+}
