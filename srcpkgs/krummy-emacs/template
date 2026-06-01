@@ -1,0 +1,126 @@
+# Template file for 'krummy-emacs'
+pkgname=krummy-emacs
+version=30.2
+revision=1
+build_style=gnu-configure
+configure_args="--without-x --with-x-toolkit=no --without-xpm --without-jpeg
+ --without-tiff --without-gif --without-png --without-webp --without-rsvg
+ --without-imagemagick --without-lcms2 --without-libsystemd --without-cairo
+ --without-harfbuzz --without-sound --without-gpm --without-dbus
+ --without-gconf --without-gsettings --without-selinux
+ --without-compress-install --without-xml2 --without-sqlite3
+ --without-json --without-pop --without-modules
+ --with-file-notification=inotify --with-gnutls --with-tree-sitter --with-native-compilation"
+hostmakedepends="pkg-config tar texinfo"
+makedepends="ncurses-devel gnutls-devel acl-devel tree-sitter-devel zlib-devel libgccjit-devel"
+short_desc="GNU Emacs editor (minimal terminal build)"
+maintainer="krum <git@kris.sh>"
+license="GPL-3.0-or-later"
+homepage="http://www.gnu.org/software/emacs/"
+changelog="https://www.gnu.org/savannah-checkouts/gnu/emacs/emacs.html#Releases"
+distfiles="${GNU_SITE}/emacs/emacs-${version}.tar.xz"
+checksum=b3f36f18a6dd2715713370166257de2fae01f9d38cfe878ced9b1e6ded5befd9
+nocross=yes
+nopie=yes
+
+post_install() {
+	rm -f ${DESTDIR}/usr/bin/ctags
+	rm -f ${DESTDIR}/usr/lib/systemd/user/emacs.service
+	rm -f ${DESTDIR}/usr/share/man/man1/ctags.1*
+	rm -f ${DESTDIR}/usr/share/info/info.info
+	rm -rf ${DESTDIR}/usr/share/{applications,icons}
+}
+
+krummy-emacs-common_package() {
+	short_desc="GNU Emacs editor (minimal terminal build) - common files"
+	replaces="emacs-common>=0 emacs-common-eln>=0"
+	pkg_install() {
+		vmove usr/share/emacs
+		vmove usr/share/man
+		vmove usr/share/info
+		rm -f ${PKGDESTDIR}/usr/share/info/info.info.gz
+
+		local _l=${PKGDESTDIR}/usr/share/emacs/${version}/lisp
+		local _e=${PKGDESTDIR}/usr/share/emacs/${version}/etc
+
+		# full directory removals, *none* of this is needed
+		rm -rf ${_l}/{erc,play,mh-e,calc,cedet,nxml,obsolete,image}
+
+		# gnus
+		# the mm-*/gmm-*/message/mml layer must stay because of some wack dependency chains like
+		# url-http -> mail-parse -> mm-util -> message
+		# also keeping gnus.el, gnus-util, gnus-range, mail-source (requires from message.el)
+		# news server backends
+		rm -f ${_l}/gnus/nn*.{el,elc}
+		# reader UI
+		rm -f ${_l}/gnus/gnus-{art,async,bcklg,bookmark,cache,cite,cloud,cus}.{el,elc}
+		rm -f ${_l}/gnus/gnus-{dbus,delay,demon,diary,dired,draft,dup,eform}.{el,elc}
+		rm -f ${_l}/gnus/gnus-{fun,gravatar,group,html,icalendar,int,kill,logic}.{el,elc}
+		rm -f ${_l}/gnus/gnus-{mh,ml,mlspl,msg,notifications,picon,registry}.{el,elc}
+		rm -f ${_l}/gnus/gnus-{rfc1843,rmail,salt,score,search,sieve}.{el,elc}
+		rm -f ${_l}/gnus/gnus-{spec,srvr,start,sum,topic,undo,uu,vm,win}.{el,elc}
+		# spam, crypto, misc standalone features
+		rm -f ${_l}/gnus/{spam,spam-wash,spam-stat,spam-report}.{el,elc}
+		rm -f ${_l}/gnus/{smime,smiley,canlock,deuglify,gssapi,score-mode}.{el,elc}
+
+		# mail
+		# only removing the standalone rmail client, the rest
+		# of mail/ is kept because message.el requires
+		# shit like sendmail, mailabbrev, smtpmail
+		rm -f ${_l}/mail/{rmail,rmailedit,rmailkwd,rmailmm}.{el,elc}
+		rm -f ${_l}/mail/{rmailmsc,rmailout,rmailsort,rmailsum,rmail-spam-filter}.{el,elc}
+		rm -f ${_l}/mail/{unrmail,undigest,mspools}.{el,elc}
+		rm -f ${_l}/mail/blessmail.el
+
+		# network shit
+		# this keeps some stuff like tramp*, gnutls, network-stream, nsm, shr*,
+		# browse-url, dns, socks, sasl*, puny, mailcap,
+		# hmac-*, rfc2104, ntlm, secrets, net-utils,
+		# goto-addr, dbus, ange-ftp
+		rm -f ${_l}/net/{eww,rcirc,telnet,pop3,imap,ldap}.{el,elc}
+		rm -f ${_l}/net/{webjump,zeroconf,mairix,snmp-mode}.{el,elc}
+		rm -f ${_l}/net/{soap-client,soap-inspect}.{el,elc}
+		rm -f ${_l}/net/{sieve,sieve-mode,sieve-manage}.{el,elc}
+		rm -f ${_l}/net/{dictionary,dictionary-connection}.{el,elc}
+		rm -f ${_l}/net/newst*.{el,elc}
+		rm -f ${_l}/net/eudc*.{el,elc}
+
+		# some lisp stuff
+		# postscript / printing
+		rm -f ${_l}/{ps-print,ps-print-loaddefs,ps-mule,ps-bdf,ps-samp}.{el,elc}
+		rm -f ${_l}/{lpr,printing}.{el,elc}
+
+		# gui-only / x-only
+		rm -f ${_l}/{xwidget,x-dnd,pgtk-dnd,touch-screen,pixel-scroll}.{el,elc}
+
+		# image/document viewers (no image support in this build)
+		rm -f ${_l}/{doc-view,image-mode,image-file,iimage}.{el,elc}
+
+		# html fontification / speedbar
+		rm -f ${_l}/{htmlfontify,hfy-cmap,speedbar,ezimage}.{el,elc}
+
+		# misc unused standalone features
+		rm -f ${_l}/{ses,forms,calculator,strokes,talk,type-break,woman,mpc,sqlite-mode}.{el,elc}
+
+		# windows/dos garbage
+		rm -f ${_l}/{w32-vars,w32-fns,dos-w32,dos-vars,dos-fns}.{el,elc}
+
+		# etc
+		# assets for removed features / gui resources
+		rm -rf ${_e}/{images,refcards,srecode,schema,nxml,gnus,forms}
+
+		# keep only the english tutorial
+		find ${_e}/tutorials -type f ! -name 'TUTORIAL' -delete
+
+		# old news, removed feature changelogs, joke files
+		rm -f ${_e}/NEWS.[0-9]* ${_e}/NEWS.unknown
+		rm -f ${_e}/{MH-E-NEWS,ERC-NEWS,CALC-NEWS,NXML-NEWS}
+		rm -f ${_e}/{yow.lines,spook.lines,ses-example.ses,enriched.txt,future-bug}
+		rm -f ${_e}/{JOKES,DEVEL.HUMOR}
+
+		# systemd / gui desktop entries (i only use terminal emacs and obv not systemd)
+		rm -f ${_e}/emacs.service
+		rm -f ${_e}/{emacs,emacs-mail,emacsclient,emacsclient-mail}.desktop
+		rm -f ${_e}/{emacs.metainfo.xml,emacs.icon,org.gnu.emacs.defaults.gschema.xml}
+	}
+}
